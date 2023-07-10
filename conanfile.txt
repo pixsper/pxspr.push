@@ -1,0 +1,8 @@
+[requires]
+libusb/1.0.26
+
+[generators]
+CMakeDeps
+
+[layout]
+cmake_layout

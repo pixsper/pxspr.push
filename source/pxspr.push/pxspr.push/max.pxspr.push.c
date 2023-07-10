@@ -1,0 +1,101 @@
+#include <jit.common.h>
+#include <max.jit.mop.h>
+
+typedef struct _max_pxspr_push
+{
+	t_object object;
+	void* obex;
+	t_symbol* server_name;
+
+} t_max_pxspr_push;
+
+
+BEGIN_USING_C_LINKAGE
+t_jit_err pxspr_push_init(void);
+void* max_pxspr_push_new(t_symbol* s, long argc, t_atom* argv);
+void max_pxspr_push_free(t_max_pxspr_push* x);
+void max_pxspr_push_notify(t_max_pxspr_push* x, t_symbol* s, t_symbol* msg, void* ob, void* data);
+END_USING_C_LINKAGE
+
+
+static void* s_max_pxspr_push_class = NULL;
+
+
+void ext_main(void* r)
+{
+	common_symbols_init();
+
+	t_class *max_class, *jit_class;
+
+	pxspr_push_init();
+
+	max_class = class_new("pxspr.push", (method)max_pxspr_push_new, (method)max_pxspr_push_free, sizeof(t_max_pxspr_push), NULL, A_GIMME, 0);
+	max_jit_class_obex_setup(max_class, calcoffset(t_max_pxspr_push, obex));
+
+	jit_class = (t_class*)jit_class_findbyname(gensym("pxspr_push"));
+	max_jit_class_mop_wrap(max_class, jit_class, MAX_JIT_MOP_FLAGS_OWN_ADAPT | MAX_JIT_MOP_FLAGS_OWN_OUTPUTMODE | MAX_JIT_MOP_FLAGS_OWN_NOTIFY);
+	max_jit_class_wrap_standard(max_class, jit_class, 0);
+
+	class_addmethod(max_class, (method)max_jit_mop_assist, "assist", A_CANT, 0);
+	class_addmethod(max_class, (method)max_pxspr_push_notify, "notify", A_CANT, 0);
+
+	class_register(CLASS_BOX, max_class);
+	s_max_pxspr_push_class = max_class;
+}
+
+
+void* max_pxspr_push_new(t_symbol* s, long argc, t_atom* argv)
+{
+	t_max_pxspr_push* x;
+	void* o;
+
+	x = (t_max_pxspr_push *)max_jit_object_alloc((t_class*)s_max_pxspr_push_class, gensym("pxspr_push"));
+	if (x)
+	{
+		o = jit_object_new(gensym("pxspr_push"));
+		if (o)
+		{
+			max_jit_mop_setup_simple(x, o, argc, argv);
+			max_jit_attr_args(x, argc, argv);
+
+			x->server_name = jit_symbol_unique();
+			jit_object_method(o, _jit_sym_register, x->server_name);
+			jit_object_attach(x->server_name, x);
+		}
+		else
+		{
+			jit_object_error((t_object *)x, "pxspr.push: could not allocate object");
+			object_free((t_object *)x);
+			x = NULL;
+		}
+	}
+	return x;
+}
+
+
+void max_pxspr_push_free(t_max_pxspr_push* x)
+{
+	max_jit_mop_free(x);
+	jit_object_free(max_jit_obex_jitob_get(x));
+	max_jit_object_free(x);
+}
+
+
+void max_pxspr_push_notify(t_max_pxspr_push* x, t_symbol* s, t_symbol* msg, void* ob, void* data)
+{
+	if (msg == _sym_attr_modified)
+	{
+		t_jit_attr* attribute = data;
+		t_jit_object* jitobj = max_jit_obex_jitob_get(x);
+		t_atom_long status = jit_attr_getlong(jitobj, attribute->name);
+
+		t_atom av[1];
+		jit_atom_setlong(av, status);
+
+		max_jit_obex_dumpout(x, attribute->name, 1, av);
+	}
+	else
+	{
+		max_jit_mop_notify(x, s, msg);
+	}
+}

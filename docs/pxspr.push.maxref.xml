@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<?xml-stylesheet href="./c74ref.xsl" type="text/xsl"?>
+
+<c74object name='pxspr.push'>
+
+	<digest>Display Jitter matrices on the Ableton Push 2 display</digest>
+	<description>
+
+	</description>
+
+
+	<!--METADATA-->
+
+	<metadatalist>
+		<metadata name='author'>Pixsper</metadata>
+		<metadata name='tag'>jitter</metadata>
+		<metadata name='tag'>video</metadata>
+		<metadata name='tag'>ableton</metadata>
+		<metadata name='tag'>push</metadata>
+	</metadatalist>
+
+	<!--MESSAGES-->
+
+	<methodlist>
+	
+		<method name='open'>
+			<digest>Opens the Push 2 USB device.</digest>
+		</method>
+		
+		<method name='close'>
+			<digest>Closes the Push 2 USB device</digest>
+			</method>
+
+	</methodlist>
+
+
+	<!--ATTRIBUTES-->
+
+	<attributelist>
+
+		<attribute name='status' get='1' set='0' type='long' size='1' >
+			<digest>Connection status of the Push 2 USB device</digest>
+		</attribute>
+
+	</attributelist>
+
+</c74object>

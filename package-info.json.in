@@ -1,0 +1,28 @@
+{
+	"name" : "@C74_PACKAGE_NAME@",
+	"displayname" : "pxspr.push",
+	"version" : "@GIT_VERSION_MAJ@.@GIT_VERSION_MIN@.@GIT_VERSION_SUB@",
+	"author" : "Pixsper",
+	"description" : "External object for communication with Ableton Push 2 controller",
+	"tags" : [  ],
+	"website" : "https://www.github.com/pixsper/pxspr.push",
+	"extends" : "",
+	"extensible" : 0,
+	"max_version_min" : "8.2.0",
+	"max_version_max" : "none",
+	"os" : 	{
+		"macintosh" : {
+		    "platform" : [ "x64", "arm64" ],
+		    "min_version" : "10.11.x"
+        },
+        "windows" : {
+        	"platform" : [ "x64" ],
+        	"min_version" : "7"
+        }
+	},
+	"exclude_from_collectives" : "no",
+	"package_extra" : 	{
+		"reverse_domain" : "com.pixsper",
+		"copyright" : "Copyright (c) 2024 Pixsper Ltd."
+	}
+}
